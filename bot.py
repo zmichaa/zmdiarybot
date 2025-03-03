@@ -590,7 +590,7 @@ async def process_day_selection(callback: types.CallbackQuery, state: FSMContext
     example_subjects = [
         "Алгебра", "Английский", "Биология", "ВИС", "География", "Геометрия", "История",
         "Информатика", "ИЗО", "Литература", "Математика", "Музыка", "МХК", "Общество",
-        "ОБЖ", "РОВ", "Русский", "Технология", "Физика", "Физ-ра", "Химия", "Английский/Информатика"
+        "ОБЖ", "РОВ", "Русский", "Технология", "Физика", "Физ-ра", "Химия", "Английский/Информатика", "Информатика/Английский"
     ]
 
     for subject in example_subjects:
@@ -623,9 +623,13 @@ async def process_date_selection(callback: types.CallbackQuery, state: FSMContex
         await state.update_data(date=selected_date)
         data = await state.get_data()
         user_class = data.get("user_class")
+        
+        # Используем await для получения клавиатуры
+        keyboard = await create_subject_keyboard(user_class, day=day_of_week)
+        
         await callback.message.edit_text(
             f"Вы выбрали дату: {formatted_date}\nВыберите предмет:",
-            reply_markup=create_subject_keyboard(user_class, day=day_of_week)
+            reply_markup=keyboard  # Передаем результат асинхронной функции
         )
         await state.set_state(HomeworkState.waiting_for_subject)
 

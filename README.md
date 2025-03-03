@@ -5,20 +5,35 @@
 ## Установка
 
 1. Клонируйте репозиторий:
-   ```
-   git clone https://github.com/zmichaa/zmdiarybot.git
-   ```
+   
+```bash
+git clone https://github.com/zmichaa/zmdiarybot.git
+```
+
 2. Перейдите в папку с ботом:
-   ```
-   cd zmdiarybot
-   ```
+   
+```bash
+cd zmdiarybot
+```
+
 3. Установите зависимости:
-   ```
-   python -m venv venv
-   .\venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-4. Запустите бота:
-   ```
-   python bot.py
-   ```
+   
+```bash
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+4. Создайте файл конфигурации `config.py`:
+
+```env
+TOKEN="ВАШ_ТОКЕН_БОТА"
+ADMIN_CHAT_ID="ID_АДМИНА"
+```
+
+5. Запустите бота:
+
+```bash
+python bot.py
+```
+
