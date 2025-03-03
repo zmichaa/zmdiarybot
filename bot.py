@@ -607,6 +607,7 @@ async def process_day_selection(callback: types.CallbackQuery, state: FSMContext
 async def process_date_selection(callback: types.CallbackQuery, state: FSMContext):
     selected_date = callback.data.split("_")[1]
     current_state = await state.get_state()
+
     if current_state == HomeworkState.waiting_for_date:
         try:
             date_obj = datetime.strptime(selected_date, "%y %m %d")
@@ -618,15 +619,13 @@ async def process_date_selection(callback: types.CallbackQuery, state: FSMContex
 
         days = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
         day_of_week = days[date_obj.weekday()]
+
         await state.update_data(date=selected_date)
         data = await state.get_data()
         user_class = data.get("user_class")
-        keyboard = await create_subject_keyboard(user_class, day=day_of_week)
         await callback.message.edit_text(
-            f"📅 Вы выбрали дату: <code>{formatted_date}</code>\n\n"
-            "Выберите предмет:",
-            reply_markup=keyboard,
-            parse_mode="HTML"
+            f"Вы выбрали дату: {formatted_date}\nВыберите предмет:",
+            reply_markup=create_subject_keyboard(user_class, day=day_of_week)
         )
         await state.set_state(HomeworkState.waiting_for_subject)
 
@@ -684,9 +683,11 @@ async def process_date_selection(callback: types.CallbackQuery, state: FSMContex
 
 @router.callback_query(F.data == "manual_date")
 async def process_manual_date(callback: types.CallbackQuery):
-    today = datetime.now().strftime("%y %m %d")
+    today = datetime.now()
+    formatted_today = today.strftime("%y %m %d")
     await callback.message.edit_text(
-        f"Сегодня {today}.\nВведите дату в формате ММ ДД или ГГ ММ ДД:"
+        f"Сегодня <code>{formatted_today}</code>.\nВведите дату в формате ММ ДД или ГГ ММ ДД:",
+        parse_mode="HTML"
     )
 
 @router.message(HomeworkState.waiting_for_view_date, F.text.regexp(r"(\d{2} \d{2} \d{2})|(\d{2} \d{2})"))
